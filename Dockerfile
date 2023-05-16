@@ -1,10 +1,10 @@
 FROM maven as build
-WORKDIR /app
-COPY . .
-RUN mvn install
+WORKDIR /home/app
+COPY . /home/app
+RUN mvn -f /home/app/pom.xml clean package
 
 FROM openjdk:11.0
-WORKDIR /app
-COPY --from=build /app/target/devops-integration.jar /app/
+VOLUME /tmp
 EXPOSE 8080
-CMD ["java","-jar","devops-integration.jar"]
+COPY --from=build /home/app/target/*.jar app.jar
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app.jar" ]
