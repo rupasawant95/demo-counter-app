@@ -1,14 +1,14 @@
 pipeline{
-    
-    agent any 
-    
-    stages {
-        
+
+    agent any
+
+    stages{
+
         stage('sonar quality check'){
 
             agent{
 
-                docker{
+                docker {
                     image 'maven'
                     args '-u root'
                 }
@@ -19,24 +19,10 @@ pipeline{
 
                     withSonarQubeEnv(credentialsId: 'sonar-token') {
 
-                        sh 'mvn clean package sonar:sonar'
-
+                        sh 'mvn clean package sonar:sonar'                 
                  }
-                }
-
-            }
-        }
-        stage('Quality Gate status'){
-
-            steps{
-
-                script{
-
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
     }
 }
-            
-        
